@@ -2,3 +2,8 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 data-raw/
+^\.github/workflows$
+^\./ele12345-sup-0001-tables1\.docx$
+^\./docs$
+^data-raw$
+.github
