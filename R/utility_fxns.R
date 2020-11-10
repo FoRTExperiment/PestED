@@ -1,8 +1,17 @@
 
 #' format_inputs
 #'
-#' @param nc_path Path to nc file
-#' @return something
+#' Format the netcdf file form the Dietze and Matthes 2014 manuscript into a data frame that can bse used by \code{iterate.SEM}
+#'
+#' @param nc_path The path to the Dietze and Matthes 2014 netcdf file or a file with the same structure.
+#' @return a data frame consisting of columns of the following:
+#' \describe{
+#' \item{time}{the day of the year}
+#' \item{PAR}{incoming photosynthetically active radiation, umol/m2/s}
+#' \item{temp}{air temperature, degrees C}
+#' \item{VPD}{vapor pressure deficit, kPa}
+#' \item{precip}{precipitation, mm}
+#' }
 #' @export
 format_inputs <- function(nc_path){
 

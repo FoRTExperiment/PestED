@@ -1,13 +1,19 @@
 Package: PestED
-Title: What the Package Does (One Line, Title Case)
+Title: SEM R interface 
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    c(person("Ben", "Bond-Lamberty", 
+	        email = "bondlamberty@pnnl.gov", 
+	        role = "cre",
+	        comment = c(ORCID = "0000-0001-9525-4633")), 
+	        person("Kalyn", "Dorheim", 
+	        email = "kalyn.dorheim@pnnl.gov",
+	        role = "ctb", 
+	        comment = c(ORCID = "0000-0001-8093-8397")))
+Description: This package provides a felxible interface to the Simple Ecosystem Model (SEM). SEM was originally 
+  documented in ```Dietze, Michael C., and Jaclyn Hatala Matthes. “A General Ecophysiological Framework for Modelling 
+  the Impact of Pests and Pathogens on Forest Ecosystems.” Ecology Letters 17, no. 11 (November 1, 2014): 
+  1418–26. https://doi.org/10.1111/ele.12345.``` 
 Depends:
     R (>= 2.10)
 Imports:

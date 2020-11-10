@@ -1,19 +1,24 @@
 
 #' Simple Ecosystem Model
-#' @param X array [leaf,wood,root,storage,som,SoilWater,stem density]
-#' @param params params
+#' @param X an array consisting of the [leaf,wood,root,storage,som,SoilWater,stem density] TODO need to figure out if these are the inital condtion values and may be rename the array from X to something more informative.
+#' @param params a named array of SEM parameter values.
 #' @param timestep is in seconds, defaults to 30 min
-#' @param inputs PAR, temp, VPD
+#' @param inputs a data frame with the following columns:
+#' \describe{
+#' \item{time}{the day of the year}
+#' \item{PAR}{incoming photosynthetically active radiation, umol/m2/s}
+#' \item{temp}{air temperature, degrees C}
+#' \item{VPD}{vapor pressure deficit, kPa}
+#' \item{precip}{precipitation, mm}
+#' }
 #' @param pest [phloem, xylem, leaf, root, stem] a vector of pest impacts, each entry in the vector
 #' represents the percent change in thepholme, yxlem, leaf, root, and stem based on the type of disruption.
-#' @param p p
+#' @param p default value of 1800, TODO figure out what this parameter does
 #' @author Michael C, Dietze <dietze@bu.edu>
 #' @importFrom assertthat assert_that
-#' @return X
+#' @return documenation needed
 #' @export
 SEM <- function(X, params, timestep, inputs, pest = c(0, 0, 0, 1, 0), p = 1800) {
-
-  default_parameters <- PestED::default_parameters
 
   # Check the parameter inputs
   extra_params <- which(!names(params) %in% names(default_parameters))
@@ -183,6 +188,7 @@ SEM <- function(X, params, timestep, inputs, pest = c(0, 0, 0, 1, 0), p = 1800) 
 
 }
 
+
 ## Farquhar-Ball Berry Optimization Functions
 farquhar <- function(Ci, Fparams, I) {
 
@@ -236,10 +242,9 @@ arrhenius <- function(observed.value, new.temp, old.temp = 25) {
 #' @param timestep timestep
 #' @param t.start documenation needed
 #' @param years documentation needed
+#' @return data frame documenation needed
 #' @export
 iterate.SEM <- function(pest, inputs, params, timestep, t.start = 7000, years = 1) {
-
-  default_parameters <- PestED::default_parameters
 
   ### paramters
   timestep <- 1800 # seconds
@@ -304,7 +309,6 @@ iterate.SEM <- function(pest, inputs, params, timestep, t.start = 7000, years = 
                        inputs = inputs[ti, ],
                        pest = pest)
     X <- output[t, 1:7]
-    if ((t %% (48 * 7)) == 0) message(t / 48) ## day counter
     if (X[7] == 0) break
   }
 
