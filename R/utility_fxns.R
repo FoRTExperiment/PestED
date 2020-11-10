@@ -1,7 +1,7 @@
 
 #' format_inputs
 #'
-#' Format the netcdf file form the Dietze and Matthes 2014 manuscript into a data frame that can bse used by \code{iterate.SEM}
+#' Format the netcdf file form the Dietze and Matthes 2014 manuscript into a data frame that can be used by \code{iterate.SEM}
 #'
 #' @param nc_path The path to the Dietze and Matthes 2014 netcdf file or a file with the same structure.
 #' @return a data frame consisting of columns of the following:

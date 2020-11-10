@@ -10,8 +10,8 @@ Authors@R:
 	        email = "kalyn.dorheim@pnnl.gov",
 	        role = "ctb", 
 	        comment = c(ORCID = "0000-0001-8093-8397")))
-Description: This package provides a felxible interface to the Simple Ecosystem Model (SEM). SEM was originally 
-  documented in ```Dietze, Michael C., and Jaclyn Hatala Matthes. “A General Ecophysiological Framework for Modelling 
+Description: This package provides a flexible interface to the Simple Ecosystem Model (SEM). SEM was originally 
+  documented in ```Dietze, Michael C., and Jaclyn Hatala Matthes. “A General Ecophysiological Framework for Modeling 
   the Impact of Pests and Pathogens on Forest Ecosystems.” Ecology Letters 17, no. 11 (November 1, 2014): 
   1418–26. https://doi.org/10.1111/ele.12345.``` 
 Depends:
@@ -26,8 +26,13 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2
 BugReports: https://github.com/FoRTExperiment/PestED/issues
 URL: https://github.com/FoRTExperiment/PestED/
-Suggests: 
+Suggests:
+    spelling, 
     testthat,
     knitr,
     rmarkdown
+Requests: 
+    spelling,
+    ggplot2
 VignetteBuilder: knitr
+Language: en-US

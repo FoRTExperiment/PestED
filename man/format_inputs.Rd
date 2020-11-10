@@ -20,5 +20,5 @@ a data frame consisting of columns of the following:
 }
 }
 \description{
-Format the netcdf file form the Dietze and Matthes 2014 manuscript into a data frame that can bse used by \code{iterate.SEM}
+Format the netcdf file form the Dietze and Matthes 2014 manuscript into a data frame that can be used by \code{iterate.SEM}
 }
