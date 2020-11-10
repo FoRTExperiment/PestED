@@ -20,6 +20,9 @@ represents the percent change in thepholme, yxlem, leaf, root, and stem based on
 
 \item{years}{documentation needed}
 }
+\value{
+data frame documenation needed
+}
 \description{
 Solve SEM
 }
