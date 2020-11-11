@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/SEM_Inputs.html">SEM Input and Parameters</a>
+    </li>
+    <li>
       <a href="../articles/SEM_example.html">SEM Example Runs</a>
     </li>
   </ul>
@@ -90,107 +93,82 @@
 
     
     
-<p>Install PestED</p>
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
+<p>This tutorial shows how to set up SEM for a basic run and how to change the parameter values.</p>
+</div>
+<div id="set-up" class="section level2">
+<h2 class="hasAnchor">
+<a href="#set-up" class="anchor"></a>Set Up</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/FoRTExperiment/PestED/">PestED</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/FoRTExperiment/PestED/">PestED</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></code></pre></div>
+<p>Import and format the meteorological inputs.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Define the path to the netcdf file containing the meteorology inputs.</span>
 <span class="va">nc_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">'extdata/AMF_USMe2_2005_L2_GF_V006.nc'</span>, package <span class="op">=</span> <span class="st">'PestED'</span><span class="op">)</span> 
 
 <span class="co"># Format the inputs into the SEM required format. </span>
 <span class="va">met_inputs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/format_inputs.html">format_inputs</a></span><span class="op">(</span><span class="va">nc_path</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="basic-run" class="section level2">
+<h2 class="hasAnchor">
+<a href="#basic-run" class="anchor"></a>Basic Run</h2>
 <p>Now that the inputs are set up let’s run SEM.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">baseline</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iterate.SEM.html">iterate.SEM</a></span><span class="op">(</span>pest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="co">#  Disturb none of the carbon pools. </span>
             inputs <span class="op">=</span> <span class="va">met_inputs</span>, <span class="co"># Read in the met inputs. </span>
             params <span class="op">=</span> <span class="fu">PestED</span><span class="fu">::</span><span class="va"><a href="../reference/default_parameters.html">default_parameters</a></span>, <span class="co"># the list of default parameters is saved as package data. </span>
             years <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="co"># the number of years to run SEM for. </span>
-<span class="co">#&gt; 7</span>
-<span class="co">#&gt; 14</span>
-<span class="co">#&gt; 21</span>
-<span class="co">#&gt; 28</span>
-<span class="co">#&gt; 35</span>
-<span class="co">#&gt; 42</span>
-<span class="co">#&gt; 49</span>
-<span class="co">#&gt; 56</span>
-<span class="co">#&gt; 63</span>
-<span class="co">#&gt; 70</span>
-<span class="co">#&gt; 77</span>
-<span class="co">#&gt; 84</span>
-<span class="co">#&gt; 91</span>
-<span class="co">#&gt; 98</span>
-<span class="co">#&gt; 105</span>
-<span class="co">#&gt; 112</span>
-<span class="co">#&gt; 119</span>
-<span class="co">#&gt; 126</span>
-<span class="co">#&gt; 133</span>
-<span class="co">#&gt; 140</span>
-<span class="co">#&gt; 147</span>
-<span class="co">#&gt; 154</span>
-<span class="co">#&gt; 161</span>
-<span class="co">#&gt; 168</span>
-<span class="co">#&gt; 175</span>
-<span class="co">#&gt; 182</span></code></pre></div>
+<span class="va">baseline</span><span class="op">$</span><span class="va">index</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">baseline</span><span class="op">)</span> <span class="co"># add a time inndex to the results </span></code></pre></div>
 <p>Let’s take a quick look at the results.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">baseline</span><span class="op">$</span><span class="va">GPP</span>, ylab <span class="op">=</span> <span class="st">'GPP'</span>, main <span class="op">=</span> <span class="st">'Baseline SEM'</span>, type <span class="op">=</span> <span class="st">'l'</span><span class="op">)</span></code></pre></div>
-<p><img src="SEM_example_files/figure-html/unnamed-chunk-4-1.png" width="576"></p>
+<p><img src="SEM_example_files/figure-html/unnamed-chunk-4-1.png" width="480"></p>
+</div>
+<div id="change-parameter-value" class="section level2">
+<h2 class="hasAnchor">
+<a href="#change-parameter-value" class="anchor"></a>Change Parameter Value</h2>
 <p>What happens when we divide Vcmax in half?</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">new_params</span> <span class="op">&lt;-</span> <span class="fu">PestED</span><span class="fu">::</span><span class="va"><a href="../reference/default_parameters.html">default_parameters</a></span>
-<span class="va">new_params</span><span class="op">$</span><span class="va">Vcmax</span> <span class="op">&lt;-</span> <span class="fu">PestED</span><span class="fu">::</span><span class="va"><a href="../reference/default_parameters.html">default_parameters</a></span><span class="op">$</span><span class="va">Vcmax</span> <span class="op">/</span> <span class="fl">2</span>
+<code class="sourceCode R"><span class="co"># Save a copy of the default parameter values. </span>
+<span class="va">new_params</span> <span class="op">&lt;-</span> <span class="fu">PestED</span><span class="fu">::</span><span class="va"><a href="../reference/default_parameters.html">default_parameters</a></span>
 
-<span class="va">run2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iterate.SEM.html">iterate.SEM</a></span><span class="op">(</span>pest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="co">#  Disturb none of the carbon pools. </span>
+<span class="co"># Alter the Vcmax value. </span>
+<span class="va">new_params</span><span class="op">$</span><span class="va">Vcmax</span> <span class="op">&lt;-</span> <span class="fu">PestED</span><span class="fu">::</span><span class="va"><a href="../reference/default_parameters.html">default_parameters</a></span><span class="op">$</span><span class="va">Vcmax</span> <span class="op">/</span> <span class="fl">2</span></code></pre></div>
+<p>Solve SEM with the new parameter value.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">run2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iterate.SEM.html">iterate.SEM</a></span><span class="op">(</span>pest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="co">#  Disturb none of the carbon pools. </span>
             inputs <span class="op">=</span> <span class="va">met_inputs</span>, <span class="co"># Read in the met inputs. </span>
             params <span class="op">=</span> <span class="va">new_params</span>, <span class="co"># the list of default parameters is saved as package data. </span>
             years <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="co"># the number of years to run SEM for. </span>
-<span class="co">#&gt; 7</span>
-<span class="co">#&gt; 14</span>
-<span class="co">#&gt; 21</span>
-<span class="co">#&gt; 28</span>
-<span class="co">#&gt; 35</span>
-<span class="co">#&gt; 42</span>
-<span class="co">#&gt; 49</span>
-<span class="co">#&gt; 56</span>
-<span class="co">#&gt; 63</span>
-<span class="co">#&gt; 70</span>
-<span class="co">#&gt; 77</span>
-<span class="co">#&gt; 84</span>
-<span class="co">#&gt; 91</span>
-<span class="co">#&gt; 98</span>
-<span class="co">#&gt; 105</span>
-<span class="co">#&gt; 112</span>
-<span class="co">#&gt; 119</span>
-<span class="co">#&gt; 126</span>
-<span class="co">#&gt; 133</span>
-<span class="co">#&gt; 140</span>
-<span class="co">#&gt; 147</span>
-<span class="co">#&gt; 154</span>
-<span class="co">#&gt; 161</span>
-<span class="co">#&gt; 168</span>
-<span class="co">#&gt; 175</span>
-<span class="co">#&gt; 182</span></code></pre></div>
+<span class="va">run2</span><span class="op">$</span><span class="va">index</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">run2</span><span class="op">)</span> <span class="co"># add a time inndex to the results, to do is to add actual time inforamtion.</span></code></pre></div>
 <p>Compare the GPP of the two runs.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">baseline</span><span class="op">$</span><span class="va">GPP</span><span class="op">)</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt;    0.00    0.00   30.56   35.69   50.02  203.85</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">run2</span><span class="op">$</span><span class="va">GPP</span><span class="op">)</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt;   0.000   0.000   7.034  12.455  19.250 160.113</span></code></pre></div>
-<p>Tada they are different from one another!</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">baseline</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">index</span>, <span class="va">GPP</span>, color <span class="op">=</span> <span class="st">'baseline'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">run2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">index</span>, <span class="va">GPP</span>, color <span class="op">=</span> <span class="st">'lower Vcmax'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">'GPP from two SEM runs'</span>, 
+       x <span class="op">=</span> <span class="st">'Time Index'</span>, 
+       y <span class="op">=</span> <span class="st">'GPP'</span><span class="op">)</span></code></pre></div>
+<p><img src="SEM_example_files/figure-html/unnamed-chunk-7-1.png" width="480"></p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
 
 
       <footer><div class="copyright">
-  <p>Developed by First Last.</p>
+  <p>Developed by Ben Bond-Lamberty.</p>
 </div>
 
 <div class="pkgdown">

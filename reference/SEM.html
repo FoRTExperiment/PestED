@@ -95,6 +95,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/SEM_Inputs.html">SEM Input and Parameters</a>
+    </li>
+    <li>
       <a href="../articles/SEM_example.html">SEM Example Runs</a>
     </li>
   </ul>
@@ -136,11 +139,11 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>array leaf,wood,root,storage,som,SoilWater,stem density</p></td>
+      <td><p>an array consisting of the leaf,wood,root,storage,som,SoilWater,stem density TODO need to figure out if these are the initial condition values and may be rename the array from X to something more informative.</p></td>
     </tr>
     <tr>
       <th>params</th>
-      <td><p>params</p></td>
+      <td><p>a named array of SEM parameter values.</p></td>
     </tr>
     <tr>
       <th>timestep</th>
@@ -148,22 +151,29 @@
     </tr>
     <tr>
       <th>inputs</th>
-      <td><p>PAR, temp, VPD</p></td>
+      <td><p>a data frame with the following columns:</p><dl>
+<dt>time</dt><dd><p>the day of the year</p></dd>
+<dt>PAR</dt><dd><p>incoming photosynthetically active radiation, umol/m2/s</p></dd>
+<dt>temp</dt><dd><p>air temperature, degrees C</p></dd>
+<dt>VPD</dt><dd><p>vapor pressure deficit, kPa</p></dd>
+<dt>precip</dt><dd><p>precipitation, mm</p></dd>
+
+</dl></td>
     </tr>
     <tr>
       <th>pest</th>
       <td><p>phloem, xylem, leaf, root, stem a vector of pest impacts, each entry in the vector
-represents the percent change in thepholme, yxlem, leaf, root, and stem based on the type of disruption.</p></td>
+represents the percent change in the phloem, xylem, leaf, root, and stem based on the type of disruption.</p></td>
     </tr>
     <tr>
       <th>p</th>
-      <td><p>p</p></td>
+      <td><p>default value of 1800, TODO figure out what this parameter does</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>X</p>
+    <p>documentation needed</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Michael C, Dietze <a href='mailto:dietze@bu.edu'>dietze@bu.edu</a></p>
@@ -179,7 +189,7 @@ represents the percent change in thepholme, yxlem, leaf, root, and stem based on
 
       <footer>
       <div class="copyright">
-  <p>Developed by First Last.</p>
+  <p>Developed by Ben Bond-Lamberty.</p>
 </div>
 
 <div class="pkgdown">
