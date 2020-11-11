@@ -30,9 +30,7 @@ Suggests:
     spelling, 
     testthat,
     knitr,
-    rmarkdown
-Requests: 
-    spelling,
+    rmarkdown, 
     ggplot2
 VignetteBuilder: knitr
 Language: en-US
