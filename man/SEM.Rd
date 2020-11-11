@@ -7,21 +7,28 @@
 SEM(X, params, timestep, inputs, pest = c(0, 0, 0, 1, 0), p = 1800)
 }
 \arguments{
-\item{X}{array \link{leaf,wood,root,storage,som,SoilWater,stem density}}
+\item{X}{an array consisting of the \link{leaf,wood,root,storage,som,SoilWater,stem density} TODO need to figure out if these are the initial condition values and may be rename the array from X to something more informative.}
 
-\item{params}{params}
+\item{params}{a named array of SEM parameter values.}
 
 \item{timestep}{is in seconds, defaults to 30 min}
 
-\item{inputs}{PAR, temp, VPD}
+\item{inputs}{a data frame with the following columns:
+\describe{
+\item{time}{the day of the year}
+\item{PAR}{incoming photosynthetically active radiation, umol/m2/s}
+\item{temp}{air temperature, degrees C}
+\item{VPD}{vapor pressure deficit, kPa}
+\item{precip}{precipitation, mm}
+}}
 
 \item{pest}{\link{phloem, xylem, leaf, root, stem} a vector of pest impacts, each entry in the vector
-represents the percent change in thepholme, yxlem, leaf, root, and stem based on the type of disruption.}
+represents the percent change in the phloem, xylem, leaf, root, and stem based on the type of disruption.}
 
-\item{p}{p}
+\item{p}{default value of 1800, TODO figure out what this parameter does}
 }
 \value{
-X
+documentation needed
 }
 \description{
 Simple Ecosystem Model

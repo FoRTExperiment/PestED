@@ -8,7 +8,7 @@ iterate.SEM(pest, inputs, params, timestep, t.start = 7000, years = 1)
 }
 \arguments{
 \item{pest}{array \link{phloem, xylem, leaf, root, stem} a vector of pest impacts, each entry in the vector
-represents the percent change in thepholme, yxlem, leaf, root, and stem based on the type of disruption.}
+represents the percent change in the phloem, xylem, leaf, root, and stem based on the type of disruption.}
 
 \item{inputs}{the data.frame object returned by \code{format_inputs}}
 
@@ -16,9 +16,12 @@ represents the percent change in thepholme, yxlem, leaf, root, and stem based on
 
 \item{timestep}{timestep}
 
-\item{t.start}{documenation needed}
+\item{t.start}{documentation needed}
 
 \item{years}{documentation needed}
+}
+\value{
+data frame documentation needed dba
 }
 \description{
 Solve SEM

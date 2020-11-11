@@ -1,0 +1,66 @@
+---
+title: "SEM Input and Parameters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SEM Input and Parameters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+  
+  
+```{r, include = FALSE}
+  knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+  )
+```
+  
+  
+```{r}
+  library(ncdf4)
+  library(PestED)
+  library(knitr)
+```
+  
+  
+## Inputs
+  
+Start by taking a look at the netcdf file that was used in Dietze and Matthes 2014
+  
+```{r}
+nc_path <- system.file('extdata/AMF_USMe2_2005_L2_GF_V006.nc', package = 'PestED') 
+nc      <- nc_open(nc_path)
+```
+
+Print the names of the variables stored in the NetCDF files. 
+
+```{r}
+names(nc$var)
+```
+
+It looks like there are quite a few of them but how many are needed? The `format_inputs` function was designed to take this netcdf and format it into the proper format to work with `iterate.SEM`. 
+
+```{r}
+# Format the inputs into the SEM required format using a support function from the Pest ED function. 
+met_inputs <- format_inputs(nc_path)
+names(met_inputs)
+```
+
+A table of the the the input names used by `iterate.SEM` and information from the netcdf file.
+
+```{r, echo = FALSE }
+kable(data.frame(input = c('time', 'PAR', 'temp', 'VPD', 'precip'), 
+                 `nc var name` = c('DOY', 'PAR', "TA", "VPD", "PREC"), 
+                 description = c(ncatt_get(nc, 'DOY')$long_name, ncatt_get(nc, 'PAR')$long_name, ncatt_get(nc, 'TA')$long_name,
+                                 ncatt_get(nc, 'VPD')$long_name, ncatt_get(nc, 'PREC')$long_name), 
+                    units = c(NA, ncatt_get(nc, 'PAR')$units, ncatt_get(nc, 'TA')$units, 
+                           ncatt_get(nc, 'VPD')$units, ncatt_get(nc, 'PREC')$units)))
+```
+
+
+## Parameters
+
+Parameter descriptions and default values for SEM. 
+
+![SI Parameter Table: for SEM from Dietze and Matthes 2014 ](https://user-images.githubusercontent.com/27299759/98608596-8b855f80-22b9-11eb-94e2-7fa6f115d860.png){width=50%}
