@@ -1,0 +1,227 @@
+---
+title: "SEM parameter sensitivity and uncertainty analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SEM parameter sensitivity and uncertainty}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Setup
+
+```{r}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+First, load the package.
+
+```{r}
+library(PestED)
+```
+
+As in the example vignette, load and format the input meteorology data.
+
+```{r}
+metfile <- system.file("extdata/AMF_USMe2_2005_L2_GF_V006.nc", package = "PestED")
+met_inputs <- format_inputs(metfile)
+```
+
+Have a look at the default parameters.
+
+```{r}
+PestED::default_parameters
+```
+
+# Univariate sensitivity analysis 
+
+For a first pass, let's iterate over a bunch of specific leaf area (SLA) values to see what happens.
+Here, we'll do a sequence from 5 to 20 g m$^-2$.
+
+```{r}
+sla_vals <- seq(5, 20)
+print(sla_vals)
+```
+
+Now, let's run these simulations in a loop.
+This isn't super elegant or computationally efficient, but it's conceptually simple, and with this few simulations, it shouldn't matter much.
+
+```{r}
+params <- PestED::default_parameters
+sla_results <- list()
+for (i in seq_along(sla_vals)) {
+  message("Running sim ", i , " of ", length(sla_vals))
+  params[["SLA"]] <- sla_vals[i]
+  sla_results[[i]] <- iterate.SEM(
+    pest = rep(0, 5),
+    inputs = met_inputs,
+    params = params,
+    years = 1.0
+  )
+  # To each set of run results, append the run ID, SLA, and time index
+  sla_results[[i]]$index <- seq_len(nrow(sla_results[[i]]))
+  sla_results[[i]]$id <- i
+  sla_results[[i]]$SLA <- sla_vals[i]
+}
+```
+
+Each output is a `data.frame`.
+To make them easier to analyze, load `dplyr`, then use its `bind_rows` function to stack this list of `data.frame`s into a single long one.
+
+```{r}
+library(dplyr)
+
+tidy_results <- bind_rows(sla_results)
+```
+
+Now, let's see what the results look like:
+
+```{r}
+library(ggplot2)
+ggplot(tidy_results) +
+  aes(x = index, y = Bleaf, color = SLA, group = id) +
+  geom_line() +
+  scale_color_viridis_c() +
+  labs(x = "Time step", y = "Leaf biomass")
+```
+
+As we would expect, increasing SLA increases leaf biomass.
+
+## Multivariate parameter uncertainty analysis
+
+Now, let's look at the interaction between parameters.
+For this example, we'll look at SLA, Vcmax, and leaf respiration (`Rleaf`).
+First, let's look at the default values.
+
+```{r}
+PestED::default_parameters[c("SLA", "Vcmax", "Rleaf")]
+```
+
+Next, let's create a factorial combination of these parameters using the base R `expand.grid` function.
+
+```{r}
+param_grid <- expand.grid(
+  SLA = c(5, 10, 15),
+  Vcmax = c(14, 18, 22),
+  Rleaf = c(0.6, 0.72, 0.84)
+)
+nrow(param_grid)
+head(param_grid, 10)
+```
+
+Let's also associate each run here with an ID so that we can match it up with our later simulations.
+
+```{r}
+param_grid$id <- seq_len(nrow(param_grid))
+head(param_grid)
+```
+
+Now, we can basically repeat what we did before:
+Run the simulations in a loop over each row of this parameter matrix.
+
+```{r}
+params <- PestED::default_parameters
+grid_results <- list()
+for (i in seq_len(nrow(param_grid))) {
+  message("Running simulation ", i, " of ", nrow(param_grid))
+  params[["SLA"]] <- param_grid[["SLA"]][i]
+  params[["Vcmax"]] <- param_grid[["Vcmax"]][i]
+  params[["Rleaf"]] <- param_grid[["Rleaf"]][i]
+  result <- iterate.SEM(
+    pest = rep(0, 5),
+    inputs = met_inputs,
+    params = params,
+    years = 1.0
+  )
+  result$id <- param_grid[["id"]][i]
+  result$index <- seq_len(nrow(result))
+  grid_results[[i]] <- result
+}
+```
+
+Again, we combine the list of `data.frame`s into one.
+Then, we can use a `left_join` to match the runs with the parameter grid based on the `id` column.
+(NOTE: I specify `by` here because there is an `Rleaf` column in both data frames! In the parameter grid, it refers to the parameter, but in the output data frame, it's the actual respiration flux! If I didn't include `by`, this would have tried to join based on all matching column names, which would probably produce no matches---or at least, no correct ones---because no simulations match both the `id` and the `Rleaf` columns. I also add the `suffix` argument here so that I can more easily identify columns with duplicate names; here, it says that duplicate column names from the left/first data frame should get the suffix `_var` while duplicate column names from the second data frame should get the suffix `_param`. Without this argument, `dplyr` would default to `.x` and `.y`, respectively, which quickly gets confusing!)
+
+```{r}
+tidy_grid_results <- bind_rows(grid_results) %>%
+  left_join(param_grid, by = "id", suffix = c("_var", "_param"))
+head(tidy_grid_results)
+```
+
+Now that the results are tidy, we can plot them.
+One way to do a three-way sensitivity plot (with relatively few parameters) is to use faceting, though you can imagine this quickly gets ungainly with more parameter values.
+(NOTE: We have to use the `group = id` to tell `ggplot` that each `id` should be its own line. Otherwise, it will try to combine them, resulting in a weird plot.)
+(NOTE: `labeller = label_both` tells `ggplot` to give us facet labels like `Vcmax: 18`, rather than just `18`).
+
+```{r}
+ggplot(tidy_grid_results) +
+  aes(x = index, y = Bleaf, color = SLA, group = id) +
+  geom_line() +
+  facet_grid(vars(Rleaf_param), vars(Vcmax), labeller = label_both) +
+  scale_color_viridis_c()
+```
+
+A bit harder to tell what's going on here, but if you squint, you should be able to see that increasing `Vcmax` increases leaf biomass for a given SLA.
+
+Let's also look at GPP.
+The default timestep in PestED is 30 minutes, which will give us a very noisy plot by default.
+So instead, let's look at the monthly mean GPP.
+We'll need to do a bit of data processing to convert the values to dates -- we'll use the `lubridate` package to help us out.
+
+```{r}
+library(lubridate)
+results_with_date <- tidy_grid_results %>%
+  mutate(
+    # I chose an arbitrary date here
+    date = as_datetime("2019-01-01") + minutes((index - 1) * 30),
+    month = month(date)
+  )
+head(results_with_date)
+```
+
+Now, let's average by month.
+(Note that I need to include the `id` and parameter columns in the grouping as well to preserve each ensemble member).
+
+```{r}
+monthly_results <- results_with_date %>%
+  group_by(id, SLA, Vcmax, Rleaf_param, month) %>%
+  summarize_at(vars(Bleaf:Rgrow), mean) %>%
+  ungroup()
+```
+
+Now, let's plot.
+
+```{r}
+ggplot(monthly_results) +
+  aes(x = month, y = GPP, color = SLA, group = id) +
+  geom_line() +
+  facet_grid(vars(Rleaf_param), vars(Vcmax), labeller = label_both) +
+  scale_color_viridis_c()
+```
+
+We see a similar trend in GPP as in Bleaf, again, unsurprisingly.
+
+## "Poor man's calibration"
+
+A simplistic way to do calibration (sometimes called "parameter data assimilation") is just to look at which parameters gave you the result you expected.
+Suppose that we know that July GPP is between 75 and 80.
+What parameters produce that result?
+
+```{r}
+good_ids <- monthly_results %>%
+  filter(GPP >= 75, GPP <= 80) %>%
+  distinct(id) %>%
+  pull(id)
+print(good_ids)
+```
+
+Only two parameter combinations give us that result!
+Which parameter combinations were they?
+
+```{r}
+param_grid %>%
+  filter(id %in% good_ids)
+```
